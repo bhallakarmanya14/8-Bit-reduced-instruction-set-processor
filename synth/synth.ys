@@ -1,0 +1,32 @@
+read_verilog -sv ../rtl/alu.sv
+read_verilog -sv ../rtl/rf.sv
+read_verilog -sv ../rtl/forwarding_unit.sv
+read_verilog -sv ../rtl/hazard_unit.sv
+read_verilog -sv ../rtl/pipe_if_id.sv
+read_verilog -sv ../rtl/pipe_id_mem.sv
+read_verilog -sv ../rtl/core.sv
+read_verilog -sv ../rtl/bus_interconnect.sv
+read_verilog -sv ../rtl/ram.sv
+read_verilog -sv ../rtl/io.sv
+read_verilog -sv ../rtl/rom.sv
+read_verilog -sv ../rtl/top.sv
+
+hierarchy -check -top top
+proc
+opt
+fsm
+opt
+memory
+opt
+flatten
+opt_expr
+opt_clean
+opt
+techmap
+opt
+abc -g cmos2
+opt_clean
+opt
+check -assert
+tee -o synth_stats.txt stat
+write_verilog -noattr flattened_netlist.sv

@@ -1,0 +1,19 @@
+# Simulation Binaries & VCD Waveforms
+sim_*
+*.vvp
+*.vcd
+*.dot
+
+# Temporary & Log Artifacts
+*.log
+abc.script
+input.blif
+output.blif
+stdcells.genlib
+
+# OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+
+__pycache__/
+*.pyc

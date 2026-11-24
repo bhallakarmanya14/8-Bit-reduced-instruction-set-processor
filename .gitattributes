@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+# Explicit Language Classification for GitHub Linguist
+*.sv linguist-language=SystemVerilog
+*.svh linguist-language=SystemVerilog
+
+# Mark generated netlists as vendored so they do not skew language statistics
+synth/* linguist-vendored

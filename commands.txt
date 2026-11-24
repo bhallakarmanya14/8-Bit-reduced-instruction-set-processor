@@ -1,0 +1,32 @@
+# Run the Python micro-assembler to convert assembly to machine code:
+python tools/asm.py
+
+# View simplified ROM contents with binary machine code and instruction breakdown:
+type rom_contents.txt
+
+# Run the automated cycle-accurate self-checking testbench simulation:
+bash run_simulation.sh
+
+# Open GTKWave to inspect pipeline registers, forwarding, and flush waveforms:
+gtkwave waveform.vcd
+
+# Launch interactive desktop GUI viewer for Nangate 45nm GDSII silicon layout:
+python tools/launch_gds_viewer.py
+
+# Run Yosys logic synthesis and generate gate-level netlist:
+cd synth && yosys synth.ys
+
+# Display processor benchmark comparison charts (CPI, MIPS, cycles, forwarding):
+start results/comparison_charts/processor_comparison_charts.png
+
+# Display 130nm vs 45nm technology scaling charts (area, power, frequency):
+start results/comparison_charts/technology_comparison_charts.png
+
+# Open full System-on-Chip top-level elaborated RTL schematic:
+start results/schematics/schematic_top.png
+
+# Open 3-stage pipelined processor core RTL schematic:
+start results/schematics/schematic_core.png
+
+# Open full chip ASIC silicon die layout render:
+start results/layout_renders/gds_layout_full_chip.png

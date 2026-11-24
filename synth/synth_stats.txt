@@ -1,0 +1,23 @@
+
+30. Printing statistics.
+
+=== top ===
+
+   Number of wires:               3465
+   Number of wire bits:           4818
+   Number of public wires:         266
+   Number of public wire bits:    1619
+   Number of ports:                 12
+   Number of port bits:             45
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               4353
+     $_DFFE_PN0P_                 1056
+     $_DFF_PN0_                     40
+     $_DFF_PN1_                      7
+     $_NAND_                      2197
+     $_NOR_                        907
+     $_NOT_                        135
+     $scopeinfo                     11
+
