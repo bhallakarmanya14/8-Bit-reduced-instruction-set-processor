@@ -1,10 +1,10 @@
 # 8-Bit Pipelined RISC Microprocessor SoC Library
 
-[![Language: SystemVerilog](https://img.shields.io/badge/Language-SystemVerilog%20(IEEE%201800--2012)-blue.svg)](#rtl-architecture)
-[![ASIC: Nangate45](https://img.shields.io/badge/ASIC%20Node-Nangate%2045nm%20%7C%20FreePDK45-green.svg)](#asic-physical-design-results)
-[![Simulation: Icarus Verilog](https://img.shields.io/badge/Simulation-Icarus%20Verilog%20%7C%20GTKWave-brightgreen.svg)](#functional-verification--simulation)
-[![Synthesis: Yosys](https://img.shields.io/badge/Synthesis-Yosys%20Open%20Source-red.svg)](#synthesis--gate-level-statistics)
-[![Status: Tapeout Clean](https://img.shields.io/badge/DRC%20%2F%20LVS-Clean%20(0%20Violations)-success.svg)](#asic-physical-design-results)
+[![Language: SystemVerilog](https://img.shields.io/badge/Language-SystemVerilog%20(IEEE%201800--2012)-blue.svg)](#microarchitecture--features)
+[![ASIC: Nangate45](https://img.shields.io/badge/ASIC%20Node-Nangate%2045nm%20%7C%20FreePDK45-green.svg)](#asic-physical-design-results-nangate-45-nm)
+[![Simulation: Icarus Verilog](https://img.shields.io/badge/Simulation-Icarus%20Verilog%20%7C%20GTKWave-brightgreen.svg)](#2-functional-verification-checkpoints)
+[![Synthesis: Yosys](https://img.shields.io/badge/Synthesis-Yosys%20Open%20Source-red.svg)](#run-logic-synthesis-yosys)
+[![Status: Tapeout Clean](https://img.shields.io/badge/DRC%20%2F%20LVS-Clean%20(0%20Violations)-success.svg)](#asic-physical-design-results-nangate-45-nm)
 
 > **Complete Synthesizable RTL, Verification Testbench, Logic Synthesis, and Foundry-Ready GDSII ASIC Physical Design.**  
 > Target Silicon: **Nangate 45 nm Open Cell Library (FreePDK45)** @ **200 MHz clock period = 5.0 ns**
@@ -23,7 +23,7 @@ The design implements an overlapped 3-stage Harvard pipeline with dynamic hardwa
 
 The folder is organized into standardized EDA directory tiers:
 
-```
+```text
 8-bit-RISC/
 ├── rtl/                        # Synthesizable SystemVerilog RTL (13 files)
 │   ├── defs.svh                # Instruction opcodes, memory map, pipeline structs
@@ -60,12 +60,12 @@ The folder is organized into standardized EDA directory tiers:
 ## Microarchitecture & Features
 
 ### 1. Three-Stage Pipeline Partitioning
-- **Stage 1 — Fetch (IF):** Program counter generation ($PC \leftarrow PC + 1$) and single-cycle instruction fetch from 64-byte bootloader ROM.
+- **Stage 1 — Fetch (IF):** Program counter generation (`PC ← PC + 1`) and single-cycle instruction fetch from 64-byte bootloader ROM.
 - **Stage 2 — Decode / Execute (ID/EX):** Opcode decode, dual-operand register file read, dynamic forwarding operand muxing, branch condition evaluation, and 8-bit ALU computation.
 - **Stage 3 — Memory / Writeback (MEM/WB):** Synchronous SRAM access or memory-mapped I/O routing, writeback data selection, and register file commitment.
 
 ### 2. Hazard Mitigation Units
-- **Dynamic Forwarding Unit (`forwarding_unit.sv`):** Compares writeback destination registers ($R_d$) with ID/EX source registers ($R_s$) and dynamically routes results into ALU inputs. **Resolves RAW hazards with 0 stall cycles**, yielding a **$+33.1\%$ throughput improvement**.
+- **Dynamic Forwarding Unit (`forwarding_unit.sv`):** Compares writeback destination registers (`Rd`) with ID/EX source registers (`Rs`) and dynamically routes results into ALU inputs. **Resolves RAW hazards with 0 stall cycles**, yielding a **+33.1% throughput improvement**.
 - **Speculative Branch Flush (`hazard_unit.sv`):** Evaluates `BEQ` condition in Stage 2. When taken, asserts `flush_if_id` to discard the prefetched instruction, bounding branch penalty to exactly **1 clock cycle**.
 
 ### 3. Memory Map (8-Bit Harvard Addressing)
@@ -108,16 +108,16 @@ Every instruction is strictly 1 byte (`instr[7:0]`):
 
 ### 1. Execution Efficiency & Throughput
 - **Measured Average CPI:** **1.08** across benchmark suites (B1–B4).
-- **Execution Cycle Savings:** **$64.6\%$ clock cycle reduction** compared to multi-cycle execution ($CPI = 3.00$).
-- **Throughput Acceleration:** **$4.58\times$ higher throughput** reaching **129.6 MIPS** at target clock frequency.
-- **Hardware Forwarding Value:** **$+30.8\%$ to $+33.1\%$ execution speedup** directly measured by comparing forwarding vs stall insertion.
+- **Execution Cycle Savings:** **64.6% clock cycle reduction** compared to multi-cycle execution (`CPI = 3.00`).
+- **Throughput Acceleration:** **4.58× higher throughput** reaching **129.6 MIPS** at target clock frequency.
+- **Hardware Forwarding Value:** **+30.8% to +33.1% execution speedup** directly measured by comparing forwarding vs stall insertion.
 
 ### 2. Functional Verification Checkpoints
 The testbench (`sim/tb.sv`) validates 5 hardware execution sequences autonomously:
 - `[PASS]` **Test 1:** Parallel MMIO Input to Output Port Loopback (`0xA5`).
 - `[PASS]` **Test 2:** Synchronous SRAM Store and Bus Addressing (`SRAM[16] = 0xA5`).
-- `[PASS]` **Test 3:** Dynamic RAW Hazard Forwarding Bypass ($R_1 = 128$).
-- `[PASS]` **Test 4:** Memory-Mapped Peripheral Port Read into Register File ($R_2 = \texttt{0xA5}$).
+- `[PASS]` **Test 3:** Dynamic RAW Hazard Forwarding Bypass (`R1 = 128`).
+- `[PASS]` **Test 4:** Memory-Mapped Peripheral Port Read into Register File (`R2 = 0xA5`).
 - `[PASS]` **Test 5:** Speculative Branch Evaluation and 1-Cycle Pipeline Flush.
 
 ---
@@ -129,19 +129,19 @@ Synthesized and placed/routed using the OpenROAD ASIC physical design flow:
 | Metric | Measured Silicon Result | Academic Significance |
 |---|:---:|---|
 | **Technology Node** | **Nangate 45 nm (FreePDK45)** | Open-source deep sub-micron CMOS |
-| **Nominal Core Voltage ($V_{DD}$)** | **$1.1\,\text{V}$** | Low-power embedded profile |
-| **Target Clock Frequency ($F_{\max}$)** | **$200.0\,\text{MHz}$** | **$T_{\text{clk}} = 5.0\,\text{ns}$** critical path |
+| **Nominal Core Voltage (VDD)** | **1.1 V** | Low-power embedded profile |
+| **Target Clock Frequency (Fmax)** | **200.0 MHz** | **Tclk = 5.0 ns** critical path |
 | **Total Standard Cells** | **3,514 cells** | Optimized cell library mapping |
-| **Sequential Storage (DFF)** | **1,103 flip-flops** | 128B SRAM array ($1,024$) + pipeline latches |
-| **Total Cell Area** | **$9,489.3\,\mu\text{m}^2$** | Ultra-compact core silicon area |
-| ↳ **Sequential Cell Area** | **$5,868.0\,\mu\text{m}^2$ ($61.8\%$)** | SRAM memory dominance |
-| ↳ **Combinational Cell Area** | **$3,621.3\,\mu\text{m}^2$ ($38.2\%$)** | Logic synthesis footprint |
-| **Die Dimensions / Footprint** | **$160 \times 160\,\mu\text{m}$ ($0.0256\,\text{mm}^2$)** | $14.06\times$ footprint shrink vs 130nm |
-| **Core Area Utilization** | **$37.1\% – 40.0\%$** | Zero routing congestion across metals |
-| **Dynamic Power Dissipation** | **$1.40\,\text{mW}$** | $63.2\%$ reduction over 130nm baseline |
-| **Static Leakage Power** | **$18.2\,\mu\text{W}$** | Minimal standby leakage |
-| **Clock Tree Skew (CTS)** | **$< 35\,\text{ps}$** | Balanced H-tree across 1,103 clock sinks |
-| **Peak Power Grid IR Drop** | **$< 15\,\text{mV}$** | Metal 1 / Metal 4 orthogonal PDN mesh |
+| **Sequential Storage (DFF)** | **1,103 flip-flops** | 128B SRAM array (1,024) + pipeline latches |
+| **Total Cell Area** | **9,489.3 µm²** | Ultra-compact core silicon area |
+| ↳ **Sequential Cell Area** | **5,868.0 µm² (61.8%)** | SRAM memory dominance |
+| ↳ **Combinational Cell Area** | **3,621.3 µm² (38.2%)** | Logic synthesis footprint |
+| **Die Dimensions / Footprint** | **160 × 160 µm (0.0256 mm²)** | 14.06× footprint shrink vs 130nm |
+| **Core Area Utilization** | **37.1% – 40.0%** | Zero routing congestion across metals |
+| **Dynamic Power Dissipation** | **1.40 mW** | 63.2% reduction over 130nm baseline |
+| **Static Leakage Power** | **18.2 µW** | Minimal standby leakage |
+| **Clock Tree Skew (CTS)** | **< 35 ps** | Balanced H-tree across 1,103 clock sinks |
+| **Peak Power Grid IR Drop** | **< 15 mV** | Metal 1 / Metal 4 orthogonal PDN mesh |
 | **Physical Verification** | **0 DRC / 0 LVS Errors** | Foundry tapeout ready (`synth/top_pipelined_cpu.gds`) |
 
 ---
@@ -167,6 +167,3 @@ yosys synth/synth.ys
 
 ## Author & Academic Attribution
 - **Author:** Karmanya Bhalla
-
-
-
