@@ -7,7 +7,7 @@
 [![Status: Tapeout Clean](https://img.shields.io/badge/DRC%20%2F%20LVS-Clean%20(0%20Violations)-success.svg)](#asic-physical-design-results)
 
 > **Complete Synthesizable RTL, Verification Testbench, Logic Synthesis, and Foundry-Ready GDSII ASIC Physical Design.**  
-> Target Silicon: **Nangate 45 nm Open Cell Library (FreePDK45)** @ **200 MHz clk= 5.0 ns**.
+> Target Silicon: **Nangate 45 nm Open Cell Library (FreePDK45)** @ **200 MHz clock period = 5.0 ns**
 
 ---
 
